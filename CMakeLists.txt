@@ -10,7 +10,7 @@ project("sqlite_orm" VERSION ${PACKAGE_VERSION})
 
 # Handling C++ standard version to use
 option(SQLITE_ORM_ENABLE_CXX_20 "Enable C++ 20" OFF)
-option(SQLITE_ORM_ENABLE_CXX_17 "Enable C++ 17" OFF)
+option(SQLITE_ORM_ENABLE_CXX_17 "Enable C++ 17" ON)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 if(SQLITE_ORM_ENABLE_CXX_20)
     set(CMAKE_CXX_STANDARD 20)
@@ -78,7 +78,7 @@ if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME AND BUILD_TESTING)
     add_subdirectory(tests)
 endif()
 
-option(BUILD_EXAMPLES ON)
+option(BUILD_EXAMPLES OFF)
 if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME AND BUILD_EXAMPLES)
     add_subdirectory(examples)
 endif()
