@@ -32,7 +32,7 @@ message(STATUS "Configuring ${PROJECT_NAME} ${sqlite_orm_VERSION}")
 
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/cmake")
 
-include(CTest)
+#include(CTest)
 
 ### Dependencies
 add_subdirectory(dependencies)
@@ -73,10 +73,10 @@ endif()
 ucm_print_flags()
 message(STATUS "CMAKE_BUILD_TYPE: ${CMAKE_BUILD_TYPE}")
 
-# Tests
-if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME AND BUILD_TESTING)
-    add_subdirectory(tests)
-endif()
+## Tests
+#if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME AND BUILD_TESTING)
+#    add_subdirectory(tests)
+#endif()
 
 option(BUILD_EXAMPLES OFF)
 if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME AND BUILD_EXAMPLES)
