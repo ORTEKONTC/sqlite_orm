@@ -1,5 +1,7 @@
 #pragma once
 
+#define PRIME_LOG(msg, code) do { fprintf(stderr, "%s:%d: %s %i\n", __FILE__, __LINE__, msg, code); } while (0)
+
 #if defined(_MSC_VER)
 __pragma(push_macro("min"))
 #undef min
@@ -8262,6 +8264,7 @@ namespace sqlite_orm {
             void operator()(const T& t) {
                 int rc = statement_binder<T>{}.bind(this->stmt, this->index++, t);
                 if(SQLITE_OK != rc) {
+                    PRIME_LOG("SqliteOrm throws error", rc);
                     throw_translated_sqlite_error(stmt);
                 }
             }
@@ -8319,6 +8322,7 @@ namespace sqlite_orm {
             void bind(const T& t, size_t idx) const {
                 int rc = statement_binder<T>{}.bind(this->stmt, int(idx + 1), t);
                 if(SQLITE_OK != rc) {
+                    PRIME_LOG("SqliteOrm throws error", rc);
                     throw_translated_sqlite_error(stmt);
                 }
             }
@@ -8814,6 +8818,7 @@ namespace sqlite_orm {
         inline sqlite3_stmt* prepare_stmt(sqlite3* db, std::string query) {
             sqlite3_stmt* stmt;
             if(sqlite3_prepare_v2(db, query.c_str(), -1, &stmt, nullptr) != SQLITE_OK) {
+                PRIME_LOG("SqliteOrm throws error", sqlite3_errcode(db));
                 throw_translated_sqlite_error(db);
             }
             return stmt;
@@ -8822,6 +8827,7 @@ namespace sqlite_orm {
         inline void perform_void_exec(sqlite3* db, const std::string& query) {
             int rc = sqlite3_exec(db, query.c_str(), nullptr, nullptr, nullptr);
             if(rc != SQLITE_OK) {
+                PRIME_LOG("SqliteOrm throws error", rc);
                 throw_translated_sqlite_error(db);
             }
         }
@@ -8832,6 +8838,7 @@ namespace sqlite_orm {
                                  void* user_data) {
             int rc = sqlite3_exec(db, query, callback, user_data, nullptr);
             if(rc != SQLITE_OK) {
+                PRIME_LOG("SqliteOrm throws error", rc);
                 throw_translated_sqlite_error(db);
             }
         }
@@ -8847,6 +8854,7 @@ namespace sqlite_orm {
         void perform_step(sqlite3_stmt* stmt) {
             int rc = sqlite3_step(stmt);
             if(rc != expected) {
+                PRIME_LOG("SqliteOrm throws error", rc);
                 throw_translated_sqlite_error(stmt);
             }
         }
@@ -8860,6 +8868,7 @@ namespace sqlite_orm {
                 case SQLITE_DONE:
                     break;
                 default: {
+                    PRIME_LOG("SqliteOrm throws error", rc);
                     throw_translated_sqlite_error(stmt);
                 }
             }
@@ -8876,6 +8885,7 @@ namespace sqlite_orm {
                     case SQLITE_DONE:
                         break;
                     default: {
+                        PRIME_LOG("SqliteOrm throws error", rc);
                         throw_translated_sqlite_error(stmt);
                     }
                 }
@@ -10902,6 +10912,7 @@ namespace sqlite_orm {
                 if(1 == ++this->_retain_count) {
                     auto rc = sqlite3_open(this->filename.c_str(), &this->db);
                     if(rc != SQLITE_OK) {
+                        PRIME_LOG("SqliteOrm throws error", rc);
                         throw_translated_sqlite_error(db);
                     }
                 }
@@ -10911,6 +10922,7 @@ namespace sqlite_orm {
                 if(0 == --this->_retain_count) {
                     auto rc = sqlite3_close(this->db);
                     if(rc != SQLITE_OK) {
+                        PRIME_LOG("SqliteOrm throws error", rc);
                         throw_translated_sqlite_error(db);
                     }
                 }
@@ -14134,6 +14146,7 @@ namespace sqlite_orm {
                                                                function,
                                                                functionExists ? collate_callback : nullptr);
                     if(resultCode != SQLITE_OK) {
+                        PRIME_LOG("SqliteOrm throws error", resultCode);
                         throw_translated_sqlite_error(db);
                     }
                 }
@@ -14338,6 +14351,7 @@ namespace sqlite_orm {
                     auto resultCode =
                         sqlite3_create_collation(db, p.first.c_str(), SQLITE_UTF8, &p.second, collate_callback);
                     if(resultCode != SQLITE_OK) {
+                        PRIME_LOG("SqliteOrm throws error", resultCode);
                         throw_translated_sqlite_error(db);
                     }
                 }
@@ -14384,6 +14398,7 @@ namespace sqlite_orm {
                                                                      nullptr,
                                                                      nullptr);
                         if(resultCode != SQLITE_OK) {
+                            PRIME_LOG("SqliteOrm throws error", resultCode);
                             throw_translated_sqlite_error(db);
                         }
                     }
@@ -14403,6 +14418,7 @@ namespace sqlite_orm {
                                                              nullptr,
                                                              nullptr);
                 if(resultCode != SQLITE_OK) {
+                    PRIME_LOG("SqliteOrm throws error", resultCode);
                     throw_translated_sqlite_error(db);
                 }
             }
@@ -14417,6 +14433,7 @@ namespace sqlite_orm {
                                                           aggregate_function_step_callback,
                                                           aggregate_function_final_callback);
                 if(resultCode != SQLITE_OK) {
+                    PRIME_LOG("SqliteOrm throws error", resultCode);
                     throw_translated_sqlite_error(resultCode);
                 }
             }
@@ -18350,6 +18367,7 @@ namespace sqlite_orm {
                             throw std::system_error{orm_error_code::not_found};
                         } break;
                         default: {
+                            PRIME_LOG("SqliteOrm throws error", stepRes);
                             throw_translated_sqlite_error(stmt);
                         }
                     }
