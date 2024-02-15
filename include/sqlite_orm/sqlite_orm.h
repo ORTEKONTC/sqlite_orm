@@ -13108,7 +13108,9 @@ namespace sqlite_orm {
             pragma_t(get_connection_t get_connection_) : get_connection(move(get_connection_)) {}
 
             void busy_timeout(int value) {
+                this->_busy_timeout = -1;
                 this->set_pragma("busy_timeout", value);
+                this->_busy_timeout = value;
             }
 
             int busy_timeout() {
@@ -13247,6 +13249,7 @@ namespace sqlite_orm {
           private:
             friend struct storage_base;
 
+            int _busy_timeout = -1;
             int _synchronous = -1;
             signed char _journal_mode = -1;  //  if != -1 stores static_cast<sqlite_orm::journal_mode>(journal_mode)
             get_connection_t get_connection;
@@ -14339,6 +14342,10 @@ namespace sqlite_orm {
                     this->foreign_keys(db, true);
                 }
 #endif
+                if(this->pragma._busy_timeout != -1) {
+                    this->pragma.busy_timeout(this->pragma._busy_timeout);
+                }
+
                 if(this->pragma._synchronous != -1) {
                     this->pragma.synchronous(this->pragma._synchronous);
                 }
