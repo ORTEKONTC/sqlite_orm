@@ -577,6 +577,10 @@ namespace sqlite_orm {
                     this->foreign_keys(db, true);
                 }
 #endif
+                if(this->pragma._busy_timeout != -1) {
+                    this->pragma.busy_timeout(this->pragma._busy_timeout);
+                }
+
                 if(this->pragma._synchronous != -1) {
                     this->pragma.synchronous(this->pragma._synchronous);
                 }
