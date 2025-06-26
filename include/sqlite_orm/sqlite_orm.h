@@ -14337,6 +14337,10 @@ namespace sqlite_orm {
 #endif
             void on_open_internal(sqlite3* db) {
 
+              if(this->on_open) {
+                this->on_open(db);
+              }
+
 #if SQLITE_VERSION_NUMBER >= 3006019
                 if(this->cachedForeignKeysCount) {
                     this->foreign_keys(db, true);
@@ -14377,10 +14381,6 @@ namespace sqlite_orm {
 
                 for(auto& functionPointer: this->aggregateFunctions) {
                     try_to_create_function(db, static_cast<user_defined_aggregate_function_t&>(*functionPointer));
-                }
-
-                if(this->on_open) {
-                    this->on_open(db);
                 }
             }
 
